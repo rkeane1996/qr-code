@@ -1,0 +1,31 @@
+name: PR Workflow
+on:
+    pull_request:
+        branches:
+            - main
+
+jobs:
+    pr_validation:
+        name: PR Validation
+        runs-on: ubuntu-22.04
+        steps:
+        - uses: actions/checkout@v3
+          with:
+            fetch-depth: 0
+
+        - name: Validate the commit for Conventional Commits Standards
+          uses: wagoid/commitlint-github-action@v4
+          with:
+            failOnWarnings: true
+    
+    check_code:
+        name: Check test code (eslint)
+        uses: ./.github/workflows/_check-code-workflow.yml
+    
+    run_unit_tests:
+        needs: check_code
+        name: Run Unit Tests
+        permissions: 
+            actions: write
+            contents: write
+        uses: ./.github/workflows/_run-unit-tests-workflow.yml

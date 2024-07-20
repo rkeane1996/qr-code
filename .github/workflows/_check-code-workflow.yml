@@ -1,0 +1,25 @@
+name: Check Code Quality/Style
+on:
+    workflow_call:
+
+jobs:
+    check-code-quality:
+        name: Check Code Quality/Style
+        runs-on: ubuntu-22.04
+        permissions:
+            contents: read
+        defaults:
+            run:
+                working-directory: ./app
+        steps:
+        - name: Checkout Branch
+          uses: actions/checkout@v3
+
+        - name: Set up node
+          uses: ./.github/actions/setup-node
+          with:
+            working-directory: ./app
+        
+        - name: Run eslint
+          working-directory: ./app
+          run: npm run lint
